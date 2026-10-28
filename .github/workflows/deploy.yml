@@ -65,16 +65,13 @@ jobs:
             "$SSH_USER@$SSH_HOST" \
             'set -e
              sudo rsync -a --chown=www-data:www-data \
-               ~/rokz-editz-deploy/index.html \
-               ~/rokz-editz-deploy/images/ \
-               ~/rokz-editz-deploy/videos/ \
+               ~/rokz-editz-deploy/ \
                /var/www/html/
              sudo nginx -t
              sudo systemctl reload nginx
              echo "Deployment successful"'
-sudo rsync -a --delete --chown=www-data:www-data \
-  ~/rokz-editz-deploy/ \
-  /var/www/html/
+
       - name: Clean up SSH key
         if: always()
         run: rm -f ~/.ssh/deploy_key
+
