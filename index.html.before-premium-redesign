@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090a09">
+  <title>Rokz Editz | Video Editor & Creative Portfolio</title>
+  <meta name="description" content="Rokz Editz — cinematic edits, reels, transitions and creative video storytelling.">
+  <style>
+    :root {
+      --bg: #090a09;
+      --panel: #111310;
+      --panel-2: #171a15;
+      --text: #f4f5f0;
+      --muted: #a0a49a;
+      --accent: #baff36;
+      --line: rgba(255,255,255,.12);
+      --max: 1160px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6; overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea { font: inherit; }
+    .wrap { width: min(var(--max), calc(100% - 40px)); margin-inline: auto; }
+    #scene3d { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; opacity: .65; }
+    .site-header { position: sticky; top: 0; z-index: 10; background: rgba(9,10,9,.86); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+    .nav { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { font-size: 19px; font-weight: 900; letter-spacing: .08em; }
+    .brand span { color: var(--accent); }
+    .nav-links { display: flex; align-items: center; gap: 26px; color: #d5d8cf; font-size: 13px; }
+    .nav-links a:hover, .text-link:hover { color: var(--accent); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 17px; border: 1px solid var(--line); border-radius: 5px; font-size: 12px; font-weight: 800; letter-spacing: .07em; transition: .2s; }
+    .btn.primary { background: var(--accent); color: #10120b; border-color: var(--accent); }
+    .btn.primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(186,255,54,.16); }
+    .btn.secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .hero { min-height: 620px; display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; gap: 50px; padding-block: 90px 100px; }
+    .eyebrow { color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; margin-bottom: 17px; }
+    h1 { font-size: clamp(46px, 7vw, 86px); line-height: .98; letter-spacing: -.065em; max-width: 760px; }
+    h1 .outline { color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,.78); }
+    .hero-copy { color: var(--muted); max-width: 520px; margin-top: 24px; font-size: 16px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .hero-art { min-height: 350px; position: relative; display: grid; place-items: center; }
+    .orb { width: min(330px, 75vw); aspect-ratio: 1; border: 1px solid rgba(186,255,54,.6); border-radius: 50%; position: relative; box-shadow: inset 0 0 60px rgba(186,255,54,.06), 0 0 80px rgba(186,255,54,.06); transform: rotate(-20deg); }
+    .orb:before, .orb:after { content: ""; position: absolute; inset: 13%; border: 1px solid rgba(186,255,54,.45); border-radius: 50%; transform: rotate(55deg) scaleX(.48); }
+    .orb:after { transform: rotate(-55deg) scaleX(.48); }
+    .orb-core { position: absolute; width: 11px; height: 11px; background: var(--accent); border-radius: 50%; top: 25%; left: 23%; box-shadow: 0 0 25px var(--accent); }
+    .art-label { position: absolute; bottom: 5%; right: 0; border: 1px solid var(--line); background: #10120de8; padding: 15px 18px; font-size: 11px; letter-spacing: .1em; }
+    section { padding-block: 80px; border-top: 1px solid rgba(255,255,255,.07); }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 25px; margin-bottom: 32px; }
+    h2 { font-size: clamp(30px, 4.2vw, 48px); line-height: 1.08; letter-spacing: -.045em; }
+    .sub { color: var(--muted); margin-top: 12px; max-width: 610px; font-size: 14px; }
+    .text-link { color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .1em; white-space: nowrap; }
+    .projects { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px 18px; }
+    .project { min-width: 0; }
+    .thumb { position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); }
+    .thumb img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform .5s ease; }
+    .project:hover .thumb img { transform: scale(1.045); }
+    .play-badge { position: absolute; right: 14px; bottom: 14px; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--accent); color: #111; font-size: 15px; box-shadow: 0 0 24px rgba(186,255,54,.18); }
+    .project-info { display: flex; justify-content: space-between; gap: 12px; padding: 15px 2px 7px; }
+    .project-info h3 { font-size: 17px; line-height: 1.35; }
+    .project-info p { color: var(--muted); font-size: 12px; margin-top: 5px; }
+    .arrow { color: var(--accent); font-size: 19px; }
+    .video-feature { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 35px; align-items: center; }
+    .video-shell { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #111; }
+    .video-shell video { display: block; width: 100%; max-height: 650px; aspect-ratio: 9 / 16; object-fit: contain; background: #111; }
+    .video-note { color: var(--muted); font-size: 13px; margin-top: 15px; }
+    .services { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; margin-top: 30px; }
+    .service { padding: 25px; min-height: 180px; background: rgba(17,19,16,.75); border: 1px solid var(--line); border-radius: 6px; }
+    .service .number { color: var(--accent); font-size: 12px; letter-spacing: .1em; }
+    .service h3 { margin-top: 25px; font-size: 19px; }
+    .service p { margin-top: 8px; color: var(--muted); font-size: 13px; }
+    .about-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 60px; align-items: start; }
+    .about-copy { color: var(--muted); font-size: 15px; }
+    .about-copy p + p { margin-top: 15px; }
+    .contact-panel { border: 1px solid var(--line); background: linear-gradient(135deg, rgba(186,255,54,.07), rgba(17,19,16,.8) 50%); border-radius: 8px; padding: clamp(25px, 6vw, 60px); display: flex; align-items: end; justify-content: space-between; gap: 30px; }
+    .contact-panel h2 { font-size: clamp(34px, 5.5vw, 65px); }
+    .contact-panel p { color: var(--muted); max-width: 500px; margin-top: 15px; }
+    footer { border-top: 1px solid var(--line); padding: 25px 0; color: var(--muted); font-size: 12px; }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    @media (max-width: 800px) {
+      .nav { min-height: 68px; }
+      .nav-links { gap: 13px; font-size: 12px; }
+      .nav-cta { display: none; }
+      .hero { grid-template-columns: 1fr; padding-block: 75px; gap: 10px; }
+      .hero-art { min-height: 270px; }
+      .orb { width: 240px; }
+      .projects { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .video-feature, .about-grid { grid-template-columns: 1fr; gap: 25px; }
+      .video-shell { max-width: 440px; }
+      .services { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px) {
+      .wrap { width: min(var(--max), calc(100% - 28px)); }
+      .nav-links { gap: 10px; }
+      .nav-links a { font-size: 11px; }
+      .brand { font-size: 15px; }
+      .section-head { align-items: start; flex-direction: column; }
+      .projects { grid-template-columns: 1fr; }
+      .thumb img { aspect-ratio: 4 / 3; }
+      .contact-panel, .footer-inner { align-items: start; flex-direction: column; }
+    }
+  
+/* Clickable Featured Work thumbnails */
+#work .thumb {
+  cursor: pointer;
+  outline-offset: 4px;
+}
+#work .thumb:focus-visible {
+  outline: 2px solid var(--accent);
+}
+#project-video-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0,0,0,.88);
+  backdrop-filter: blur(10px);
+}
+#project-video-modal.is-open { display: flex; }
+#project-video-modal .modal-panel {
+  width: min(900px, 100%);
+  position: relative;
+  padding: 18px;
+  background: #111310;
+  border: 1px solid rgba(186,255,54,.4);
+  border-radius: 10px;
+  box-shadow: 0 20px 80px rgba(0,0,0,.5);
+}
+#project-video-modal .modal-title {
+  color: #f4f5f0;
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0 50px 14px 0;
+}
+#project-video-modal .modal-video {
+  display: block;
+  width: 100%;
+  max-height: 72vh;
+  background: #000;
+  border-radius: 6px;
+}
+#project-video-modal .modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 50%;
+  color: #baff36;
+  background: #20221c;
+  font-size: 24px;
+  cursor: pointer;
+}
+#project-video-modal .modal-note {
+  color: #a0a49a;
+  font-size: 12px;
+  margin-top: 10px;
+}
+@media (max-width: 520px) {
+  #project-video-modal { padding: 10px; }
+  #project-video-modal .modal-panel { padding: 12px; }
+}
+
+
+/* Clickable Featured Work thumbnails */
+#work .thumb {
+  cursor: pointer;
+  outline-offset: 4px;
+}
+#work .thumb:focus-visible {
+  outline: 2px solid var(--accent);
+}
+#project-video-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0,0,0,.88);
+  backdrop-filter: blur(10px);
+}
+#project-video-modal.is-open { display: flex; }
+#project-video-modal .modal-panel {
+  width: min(900px, 100%);
+  position: relative;
+  padding: 18px;
+  background: #111310;
+  border: 1px solid rgba(186,255,54,.4);
+  border-radius: 10px;
+  box-shadow: 0 20px 80px rgba(0,0,0,.5);
+}
+#project-video-modal .modal-title {
+  color: #f4f5f0;
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0 50px 14px 0;
+}
+#project-video-modal .modal-video {
+  display: block;
+  width: 100%;
+  max-height: 72vh;
+  background: #000;
+  border-radius: 6px;
+}
+#project-video-modal .modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 50%;
+  color: #baff36;
+  background: #20221c;
+  font-size: 24px;
+  cursor: pointer;
+}
+#project-video-modal .modal-note {
+  color: #a0a49a;
+  font-size: 12px;
+  margin-top: 10px;
+}
+@media (max-width: 520px) {
+  #project-video-modal { padding: 10px; }
+  #project-video-modal .modal-panel { padding: 12px; }
+}
+
+
+/* ROKZ EDITZ — clean cinematic intro */
+#rokz-cinematic-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #10110f;
+  color: #f5f5f0;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .8s ease, visibility .8s ease;
+}
+#rokz-cinematic-intro.intro-exit {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+#rokz-cinematic-intro .intro-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 24px;
+  text-align: center;
+  animation: rokzIntroRise 1s cubic-bezier(.2,.7,.2,1) both;
+}
+#rokz-cinematic-intro .intro-kicker {
+  margin: 0 0 18px;
+  color: #a6a99f;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .38em;
+  text-transform: uppercase;
+}
+#rokz-cinematic-intro .intro-logo {
+  margin: 0;
+  font-size: clamp(34px, 8vw, 72px);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+#rokz-cinematic-intro .intro-logo span {
+  display: block;
+  margin-top: 12px;
+  color: #baff36;
+  font-size: .42em;
+  letter-spacing: .48em;
+}
+#rokz-cinematic-intro .intro-rule {
+  width: min(220px, 55vw);
+  height: 1px;
+  margin: 28px auto 16px;
+  overflow: hidden;
+  background: rgba(255,255,255,.14);
+}
+#rokz-cinematic-intro .intro-rule::after {
+  display: block;
+  width: 45%;
+  height: 100%;
+  content: "";
+  background: #baff36;
+  animation: rokzIntroSweep 1.5s ease-in-out infinite;
+}
+#rokz-cinematic-intro .intro-caption {
+  margin: 0;
+  color: #a6a99f;
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+#rokz-cinematic-intro .intro-skip {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  z-index: 3;
+  padding: 10px 14px;
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 999px;
+  background: transparent;
+  color: #f5f5f0;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+#rokz-cinematic-intro .intro-skip:hover {
+  border-color: #baff36;
+  color: #baff36;
+}
+#rokz-cinematic-intro .intro-glow {
+  position: absolute;
+  width: min(65vw, 520px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(186,255,54,.08), transparent 68%);
+  pointer-events: none;
+}
+@keyframes rokzIntroRise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes rokzIntroSweep {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(250%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #rokz-cinematic-intro,
+  #rokz-cinematic-intro .intro-content {
+    animation: none !important;
+    transition: none !important;
+  }
+  #rokz-cinematic-intro .intro-rule::after {
+    animation: none !important;
+  }
+}
+
+
+/* Premium cinematic intro enhancement */
+#rokz-cinematic-intro {
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(186,255,54,.09), transparent 42%),
+    linear-gradient(145deg, #080908 0%, #151712 48%, #080908 100%);
+}
+#rokz-cinematic-intro::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border: 1px solid rgba(255,255,255,.09);
+  pointer-events: none;
+}
+#rokz-cinematic-intro .intro-logo {
+  text-shadow: 0 0 34px rgba(186,255,54,.12);
+  animation: rokzPremiumReveal 1.3s cubic-bezier(.2,.7,.2,1) both;
+}
+#rokz-cinematic-intro .intro-logo span {
+  text-shadow: 0 0 28px rgba(186,255,54,.2);
+}
+#rokz-cinematic-intro .intro-content {
+  animation-duration: 1.3s;
+}
+#rokz-cinematic-intro .intro-rule {
+  height: 2px;
+}
+@keyframes rokzPremiumReveal {
+  from { opacity: 0; letter-spacing: .3em; filter: blur(5px); }
+  to { opacity: 1; letter-spacing: .12em; filter: blur(0); }
+}
+
+</style>
+</head>
+<body>
+  <canvas id="scene3d" aria-hidden="true"></canvas>
+
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="#home">ROKZ <span>EDITZ.</span></a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#work">Work</a>
+        <a href="#real-video-work">Video</a>
+        <a href="#services">Services</a>
+        <a href="#about">About</a>
+      </nav>
+      <a class="btn secondary nav-cta" href="#contact">LET'S TALK ↗</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap" id="home" style="border-top:0">
+      <div>
+        <div class="eyebrow">Video Editor · Visual Storyteller</div>
+        <h1>EVERY FRAME.<br><span class="outline">A FEELING.</span></h1>
+        <p class="hero-copy">I turn raw footage into visuals that catch attention, build a mood, and make people feel something. Welcome to my creative space.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#work">EXPLORE MY WORK ↘</a>
+          <a class="btn secondary" href="#contact">LET'S COLLABORATE</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="Abstract neon orb artwork">
+        <div class="orb"><span class="orb-core"></span></div>
+        <div class="art-label">CREATIVITY IN MOTION / 001</div>
+      </div>
+    </section>
+
+    <section id="work">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Selected Creations / 01</div>
+            <h2>Featured Work<span style="color:var(--accent)">.</span></h2>
+            <p class="sub">A collection of visual concepts, moods and creative experiments.</p>
+          </div>
+          <a class="text-link" href="#real-video-work">WATCH MY VIDEO ↘</a>
+        </div>
+        <div class="projects">
+          <article class="project">
+            <div class="thumb"><img src="/images/cinematic-travel.jpg" alt="AI-generated cinematic travel thumbnail" loading="lazy"><span class="play-badge" aria-hidden="true">▶</span></div>
+            <div class="project-info"><div><h3>Beyond The Frame</h3><p>Cinematic visuals · Travel · Storytelling</p></div><span class="arrow">↗</span></div>
+          </article>
+          <article class="project">
+            <div class="thumb"><img src="/images/car-edit.jpg" alt="AI-generated cinematic car thumbnail" loading="lazy"><span class="play-badge" aria-hidden="true">▶</span></div>
+            <div class="project-info"><div><h3>Fast. Bold. Unfiltered.</h3><p>Car edits · Speed · Color grading</p></div><span class="arrow">↗</span></div>
+          </article>
+          <article class="project">
+            <div class="thumb"><img src="/images/nature-vibes.jpg" alt="AI-generated nature thumbnail" loading="lazy"><span class="play-badge" aria-hidden="true">▶</span></div>
+            <div class="project-info"><div><h3>Motion In Focus</h3><p>Nature · Cinematic mood · Visual effects</p></div><span class="arrow">↗</span></div>
+          </article>
+          <article class="project">
+            <div class="thumb"><img src="/images/urban-vibes.jpg" alt="AI-generated urban neon thumbnail" loading="lazy"><span class="play-badge" aria-hidden="true">▶</span></div>
+            <div class="project-info"><div><h3>City After Dark</h3><p>Urban visuals · Neon · Transitions</p></div><span class="arrow">↗</span></div>
+          </article>
+          <article class="project">
+            <div class="thumb"><img src="/images/anime-edit.jpg" alt="AI-generated anime-inspired thumbnail" loading="lazy"><span class="play-badge" aria-hidden="true">▶</span></div>
+            <div class="project-info"><div><h3>Anime Energy</h3><p>Anime-inspired visuals · Beat sync</p></div><span class="arrow">↗</span></div>
+          </article>
+          <article class="project">
+            <div class="thumb"><img src="/images/dark-mood.jpg" alt="AI-generated dark cinematic thumbnail" loading="lazy"><span class="play-badge" aria-hidden="true">▶</span></div>
+            <div class="project-info"><div><h3>Dark Frames</h3><p>Atmosphere · Mood · Visual storytelling</p></div><span class="arrow">↗</span></div>
+          </article>
+        </div>
+        <p class="video-note">These are AI-generated visual concepts. See the video section below for my uploaded video.</p>
+      </div>
+    </section>
+
+    <section id="real-video-work">
+      <div class="wrap video-feature">
+        <div>
+          <div class="eyebrow">My latest creation / 02</div>
+          <h2>Watch My Work<span style="color:var(--accent)">.</span></h2>
+          <p class="sub">Real edits. Creative vision. Every frame tells a story.</p>
+          <p class="video-note">Press play to watch the video. More projects can be added here as your portfolio grows.</p>
+        </div>
+        <div class="video-shell">
+          <video controls playsinline preload="metadata">
+            <source src="/videos/my-edit.mp4" type="video/mp4">
+            Your browser does not support video playback.
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <section id="services">
+      <div class="wrap">
+        <div class="eyebrow">What I can create / 03</div>
+        <h2>My Creative Toolkit<span style="color:var(--accent)">.</span></h2>
+        <div class="services">
+          <article class="service"><div class="number">01 / SHORT FORM</div><h3>Reels & Shorts</h3><p>Attention-grabbing vertical edits for Instagram, YouTube Shorts and social platforms.</p></article>
+          <article class="service"><div class="number">02 / CINEMATIC</div><h3>Cinematic Editing</h3><p>Atmospheric pacing, visual storytelling, color mood and polished cuts.</p></article>
+          <article class="service"><div class="number">03 / MOTION</div><h3>Transitions & Effects</h3><p>Beat sync, smooth transitions, motion accents and energetic sequences.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="wrap about-grid">
+        <div>
+          <div class="eyebrow">A little about me / 04</div>
+          <h2>More Than<br>Just A Cut<span style="color:var(--accent)">.</span></h2>
+        </div>
+        <div class="about-copy">
+          <p>I'm the creator behind Rokz Editz, building a visual style through editing experiments, short-form content and cinematic ideas.</p>
+          <p>This portfolio is where I showcase creative concepts, personal projects and future collaborations. Every project is a chance to learn something new and make the next edit better.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="wrap contact-panel">
+        <div>
+          <div class="eyebrow">Have a project in mind? / 05</div>
+          <h2>LET'S MAKE<br>SOMETHING <span style="color:var(--accent)">ICONIC.</span></h2>
+          <p>Need an editor for your next reel, creative project or social media content? Get in touch and let's create something memorable.</p>
+        </div>
+        <a class="btn primary" href="mailto:hello@rokzeditz.example">CONTACT ME ↗</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <a class="brand" href="#home">ROKZ <span>EDITZ.</span></a>
+      <p>© <span id="year"></span> Rokz Editz. Made with creativity.</p>
+      <a class="text-link" href="#home">BACK TO TOP ↑</a>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Lightweight animated wireframe orb and floating particles.
+    (() => {
+      const canvas = document.getElementById("scene3d");
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      let w = 0, h = 0, dpr = 1, particles = [];
+      const accent = "186,255,54";
+      function resize() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = window.innerWidth; h = window.innerHeight;
+        canvas.width = Math.floor(w * dpr);
+        canvas.height = Math.floor(h * dpr);
+        canvas.style.width = w + "px"; canvas.style.height = h + "px";
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        particles = Array.from({length: Math.min(65, Math.floor(w / 18))}, () => ({
+          x: Math.random() * w, y: Math.random() * h,
+          r: Math.random() * 1.6 + .35, v: Math.random() * .32 + .08,
+          a: Math.random() * .45 + .1
+        }));
+      }
+      function draw(t) {
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach(p => {
+          p.y -= p.v;
+          if (p.y < -4) { p.y = h + 4; p.x = Math.random() * w; }
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${accent},${p.a})`; ctx.fill();
+        });
+        const cx = w * .82, cy = h * .48, r = Math.min(w, h) * .22;
+        ctx.save(); ctx.translate(cx, cy); ctx.rotate(t * .00008);
+        ctx.strokeStyle = `rgba(${accent},.13)`; ctx.lineWidth = 1;
+        for (let i = 0; i < 7; i++) {
+          ctx.beginPath(); ctx.ellipse(0, 0, r, r * (.22 + i * .105), i * .24, 0, Math.PI * 2); ctx.stroke();
+        }
+        for (let i = 0; i < 9; i++) {
+          ctx.beginPath(); ctx.ellipse(0, 0, r * (.25 + i * .07), r, i * .19 + t * .0001, 0, Math.PI * 2); ctx.stroke();
+        }
+        ctx.restore();
+        requestAnimationFrame(draw);
+      }
+      resize(); window.addEventListener("resize", resize); requestAnimationFrame(draw);
+    })();
+  </script>
+
+<script>
+(() => {
+  const section = document.getElementById("work");
+  if (!section) return;
+
+  const modal = document.createElement("div");
+  modal.id = "project-video-modal";
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+  modal.setAttribute("aria-label", "Featured project video player");
+  modal.innerHTML = `
+    <div class="modal-panel">
+      <button class="modal-close" type="button" aria-label="Close video">&times;</button>
+      <h2 class="modal-title">Featured Project</h2>
+      <video class="modal-video" controls playsinline preload="metadata">
+        <source src="/videos/my-edit.mp4" type="video/mp4">
+        Your browser does not support video playback.
+      </video>
+      <p class="modal-note">Rokz Editz · Video preview</p>
+    </div>`;
+  document.body.appendChild(modal);
+
+  const video = modal.querySelector("video");
+  const title = modal.querySelector(".modal-title");
+  const closeButton = modal.querySelector(".modal-close");
+  let previousFocus = null;
+
+  function closeModal() {
+    modal.classList.remove("is-open");
+    video.pause();
+    video.currentTime = 0;
+    video.removeAttribute("src");
+    const source = video.querySelector("source");
+    source.src = "/videos/my-edit.mp4";
+    video.load();
+    if (previousFocus) previousFocus.focus();
+  }
+
+  function openModal(card) {
+    previousFocus = card;
+    const heading = card.closest(".project").querySelector("h3");
+    title.textContent = heading ? heading.textContent : "Featured Project";
+    modal.classList.add("is-open");
+    video.querySelector("source").src = "/videos/my-edit.mp4";
+    video.load();
+    closeButton.focus();
+  }
+
+  section.querySelectorAll(".thumb").forEach(thumb => {
+    thumb.setAttribute("role", "button");
+    thumb.setAttribute("tabindex", "0");
+    thumb.setAttribute("aria-label", "Play " +
+      (thumb.closest(".project").querySelector("h3")?.textContent || "featured project"));
+
+    thumb.addEventListener("click", () => openModal(thumb));
+    thumb.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openModal(thumb);
+      }
+    });
+  });
+
+  closeButton.addEventListener("click", closeModal);
+  modal.addEventListener("click", event => {
+    if (event.target === modal) closeModal();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && modal.classList.contains("is-open")) {
+      closeModal();
+    }
+  });
+})();
+</script>
+
+
+<script>
+(() => {
+  const section = document.getElementById("work");
+  if (!section) return;
+
+  const modal = document.createElement("div");
+  modal.id = "project-video-modal";
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+  modal.setAttribute("aria-label", "Featured project video player");
+  modal.innerHTML = `
+    <div class="modal-panel">
+      <button class="modal-close" type="button" aria-label="Close video">&times;</button>
+      <h2 class="modal-title">Featured Project</h2>
+      <video class="modal-video" controls playsinline preload="metadata">
+        <source src="/videos/my-edit.mp4" type="video/mp4">
+        Your browser does not support video playback.
+      </video>
+      <p class="modal-note">Rokz Editz · Video preview</p>
+    </div>`;
+  document.body.appendChild(modal);
+
+  const video = modal.querySelector("video");
+  const title = modal.querySelector(".modal-title");
+  const closeButton = modal.querySelector(".modal-close");
+  let previousFocus = null;
+
+  function closeModal() {
+    modal.classList.remove("is-open");
+    video.pause();
+    video.currentTime = 0;
+    video.removeAttribute("src");
+    const source = video.querySelector("source");
+    source.src = "/videos/my-edit.mp4";
+    video.load();
+    if (previousFocus) previousFocus.focus();
+  }
+
+  function openModal(card) {
+    previousFocus = card;
+    const heading = card.closest(".project").querySelector("h3");
+    title.textContent = heading ? heading.textContent : "Featured Project";
+    modal.classList.add("is-open");
+    video.querySelector("source").src = "/videos/my-edit.mp4";
+    video.load();
+    closeButton.focus();
+  }
+
+  section.querySelectorAll(".thumb").forEach(thumb => {
+    thumb.setAttribute("role", "button");
+    thumb.setAttribute("tabindex", "0");
+    thumb.setAttribute("aria-label", "Play " +
+      (thumb.closest(".project").querySelector("h3")?.textContent || "featured project"));
+
+    thumb.addEventListener("click", () => openModal(thumb));
+    thumb.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openModal(thumb);
+      }
+    });
+  });
+
+  closeButton.addEventListener("click", closeModal);
+  modal.addEventListener("click", event => {
+    if (event.target === modal) closeModal();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && modal.classList.contains("is-open")) {
+      closeModal();
+    }
+  });
+})();
+</script>
+
+
+<script>
+/* ROKZ_CINEMATIC_INTRO_V1 */
+(() => {
+  if (window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return;
+  }
+
+
+  const intro = document.createElement("div");
+  intro.id = "rokz-cinematic-intro";
+  intro.setAttribute("role", "dialog");
+  intro.setAttribute("aria-label", "Rokz Editz introduction");
+  intro.innerHTML = `
+    <div class="intro-glow" aria-hidden="true"></div>
+    <div class="intro-content">
+      <p class="intro-kicker">Creative visuals · Crafted with purpose</p>
+      <h1 class="intro-logo">ROKZ<span>EDITZ</span></h1>
+      <div class="intro-rule" aria-hidden="true"></div>
+      <p class="intro-caption">Your vision, in motion.</p>
+    </div>
+    <button class="intro-skip" type="button">Skip intro</button>
+  `;
+  document.body.appendChild(intro);
+
+  let finished = false;
+  function finishIntro() {
+    if (finished) return;
+    finished = true;
+    intro.classList.add("intro-exit");
+    window.setTimeout(() => intro.remove(), 900);
+  }
+
+  intro.querySelector(".intro-skip").addEventListener("click", finishIntro);
+  window.setTimeout(finishIntro, 5000);
+})();
+</script>
+
+</body>
+</html>
